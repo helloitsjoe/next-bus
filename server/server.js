@@ -1,5 +1,10 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
+
+// nowjs reference: https://zeit.co/docs/features/now-cli
+// now deploy [path]
+// now ls|list [app]
+// now rm|remove [id]
 
 const Keys = {
     MAPS: `AIzaSyBFZNJmIdgEElmzrhmjnILE1hwqmeoZAkA`,
