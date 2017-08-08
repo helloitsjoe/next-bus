@@ -6,7 +6,6 @@ const Keys = {
     NEXT_BUS: `KUWzeVOvsUqr4i8TY_CTOw`
 };
 
-
 // Call the traffic API on behalf of our own webpage to get around cross origin limitations
 app.get('/traffic', function (req, res) {
     getTrafficTime(res)
@@ -34,7 +33,6 @@ function getTrafficTime(res) {
     };
     request(options, function(err, _, body) {
         let json = JSON.parse(body);
-        //console.log( JSON.stringify(json,null, "  ") );
 
         res.set('Access-Control-Allow-Origin', '*');
         res.json(json);

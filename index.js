@@ -1,5 +1,3 @@
-const nb = new XMLHttpRequest();
-const mapsRequest = new XMLHttpRequest();
 const Keys = {
     MAPS: `AIzaSyBFZNJmIdgEElmzrhmjnILE1hwqmeoZAkA`,
     NEXT_BUS: `KUWzeVOvsUqr4i8TY_CTOw`
@@ -7,6 +5,7 @@ const Keys = {
 const harvard = { name: `Harvard`, code: `2056` };
 const central = { name: `Central`, code: `1436` };
 const southStation = { name: `South Station`, code: `70080`}
+
 const harvardButton = document.getElementById('harvardButton');
 const centralButton = document.getElementById('centralButton');
 const southStationButton = document.getElementById('southStationButton');
@@ -15,12 +14,16 @@ const trafficText = document.getElementById('trafficTime');
 
 let timeout = null;
 
-harvardButton.addEventListener('click', () => {
-    traffic((err, json)=>{
-        const trafficTime = json.routes[0].legs[0].duration_in_traffic.text;
-        trafficText.text = trafficTime;
-        run(harvard);
-    });
+harvardButton.addEventListener('click', async () => {
+    // nowjs reference: https://zeit.co/docs/features/now-cli
+    // now deploy [path]
+    // now ls|list [app]
+    // now rm|remove [id]
+    const url = `https://server-rthfsibjjo.now.sh/traffic`;
+    const json = await fetch(url).then(res => res.json());
+    const trafficTime = json.routes[0].legs[0].duration_in_traffic.text
+    trafficText.text = trafficTime;
+    run(harvard);
 });
 centralButton.addEventListener('click', () => {
     run(central);
@@ -31,56 +34,19 @@ southStationButton.addEventListener('click', () => {
 
 run(southStation);
 
-// traffic((trafficResponse) => {
-//     console.log(trafficResponse);
-//     run(harvard);
-// });
 
-function traffic(callback) {
-    get( `https://server-rthfsibjjo.now.sh/traffic`, callback );
-    // nowjs reference: https://zeit.co/docs/features/now-cli
-    // now deploy [path]
-    // now ls|list [app]
-    // now rm|remove [id]
-}
-
-function get(url, cb){
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function(){
-        if (request.readyState === XMLHttpRequest.DONE) {
-            if (request.status === 200) {
-                cb(null, JSON.parse(request.responseText));
-            } else {
-                cb( new Error('GET error. URL: ' + url) );
-            }
-        }
-    }
-    request.open('GET', url);
-    request.send();
-}
-
-function run(route) {
+async function run(route) {
     clearTimeout(timeout);
-    nextList.innerHTML = '';
-    nb.addEventListener('load', (res) => {
-        predict(res, route.name);
-    });
-    nb.open("GET", getRoute(route.code));
-    nb.send();
+    const destUrl = `https://realtime.mbta.com/developer/api/v2/predictionsbystop?api_key=${Keys.NEXT_BUS}&stop=${route.code}&format=json`;
+    const routeJSON = await fetch(destUrl).then(res => res.json());
+    predict(routeJSON, route.name);
 
     timeout = setTimeout(() => {
         run(route);
     }, 5000);
 }
 
-function getRoute(dest) {
-    return `https://realtime.mbta.com/developer/api/v2/predictionsbystop?api_key=${Keys.NEXT_BUS}&stop=${dest}&format=json`;
-}
-//https://realtime.mbta.com/developer/api/v2/predictionsbystop?api_key=KUWzeVOvsUqr4i8TY_CTOw&stop=${dest}&format=json
-
-function predict(res, dest) {
-    // console.log(JSON.parse(res.target.response).mode[0].route[0].direction[0].trip[0].pre_away);
-    const data = JSON.parse(res.target.response);
+function predict(data, dest) {
     if (!data.mode) {
         nextList.innerHTML = `<h1>No available data</h1>`;
         return;
@@ -98,8 +64,7 @@ function predict(res, dest) {
     nextList.innerHTML = `<h2>The next bus to ${dest} will arrive at</h2>\n<h1 id='location'></h1><h2>in</h2>`;
     trafficText.innerHTML = `<h4>Time in traffic: ${trafficText.text}</h4>`
 
-    const location = document.getElementById('location');
-    location.innerHTML = stopName;
+    document.getElementById('location').innerHTML = stopName;
     const nextArr = [];
 
     for (let i = 0; i < len; i++) {
@@ -118,17 +83,7 @@ function predict(res, dest) {
     // let nearest = Math.min.apply(null, nextArr);
     // console.log(nearest);
 
-    // function getTrafficTime() {
-    //     // let q = {
-    //     //     origin: `394+Mt+Auburn+St+Watertown+MA`,
-    //     //     dest: `115+Mt+Auburn+St+Cambridge+MA`,
-    //     //     depart: `now`,
-    //     // }
-    //     // return `localhost:80/traffic`;
-    //     return `https://server-rthfsibjjo.now.sh/traffic`;
-    // }
-
-    function isWalkable(el, idx, arr) {
+    function isWalkable(el) {
         return el > 3 && el < 9;
     }
 
