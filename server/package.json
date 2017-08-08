@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "deploy": "./node_modules/.bin/now",
+    "start": "node server.js &",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2",
+    "install": "^0.8.9",
+    "npm": "^4.5.0",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "now": "^4.11.2"
+  }
+}
