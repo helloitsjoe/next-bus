@@ -87,7 +87,6 @@ function nextBus(intent, session, callback) {
 
 function queryMBTA(intent, callback) {
     console.log(intent.slots.route.value)
-    const API_KEY = `KUWzeVOvsUqr4i8TY_CTOw`;
     const stations = {
         'Harvard': { name: `Harvard Square`, code: `2056` },
         'central': { name: `Central Square`, code: `1436` }
@@ -119,7 +118,7 @@ function queryMBTA(intent, callback) {
     }
 
     function getRoute(dest) {
-        return `http://realtime.mbta.com/developer/api/v2/predictionsbystop?api_key=${API_KEY}&stop=${dest}&format=json`;
+        return `http://realtime.mbta.com/developer/api/v2/predictionsbystop?api_key=${creds.NEXT_BUS}&stop=${dest}&format=json`;
     }
 
     function predict(res, dest) {
