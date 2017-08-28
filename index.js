@@ -1,8 +1,3 @@
-const Keys = {
-    MAPS: `AIzaSyBFZNJmIdgEElmzrhmjnILE1hwqmeoZAkA`,
-    NEXT_BUS: `KUWzeVOvsUqr4i8TY_CTOw`
-};
-
 const harvard = { name: `Harvard`, code: `2056`, trafficUrl: `https://server-rthfsibjjo.now.sh/traffic` };
 const central = { name: `Central`, code: `1436` };
 const southStation = { name: `South Station`, code: `70080`}
@@ -18,7 +13,7 @@ async function run(route) {
     // TODO: Turn on loader
     clearTimeout(timeout);
 
-    const destUrl = `https://realtime.mbta.com/developer/api/v2/predictionsbystop?api_key=${Keys.NEXT_BUS}&stop=${route.code}&format=json`;
+    const destUrl = `https://realtime.mbta.com/developer/api/v2/predictionsbystop?api_key=${creds.NEXT_BUS}&stop=${route.code}&format=json`;
     const routeJSON = await fetch(destUrl).then(res => res.json());
 
     if (route.trafficUrl) {

@@ -1,15 +1,12 @@
 var express = require('express');
 var app = express();
 
+const creds = require('../creds');
+
 // nowjs reference: https://zeit.co/docs/features/now-cli
 // now deploy [path]
 // now ls|list [app]
 // now rm|remove [id]
-
-const Keys = {
-    MAPS: `AIzaSyBFZNJmIdgEElmzrhmjnILE1hwqmeoZAkA`,
-    NEXT_BUS: `KUWzeVOvsUqr4i8TY_CTOw`
-};
 
 // Call the traffic API on behalf of our own webpage to get around cross origin limitations
 app.get('/traffic', function (req, res) {
@@ -28,7 +25,7 @@ function getTrafficTime(res) {
     }
     var request = require('request')
     const options = {
-        url: `https://maps.googleapis.com/maps/api/directions/json?origin=${q.origin}&destination=${q.dest}&departure_time=${q.depart}&key=${Keys.MAPS}`,
+        url: `https://maps.googleapis.com/maps/api/directions/json?origin=${q.origin}&destination=${q.dest}&departure_time=${q.depart}&key=${creds.MAPS}`,
         method: 'GET',
         headers: {
             'Accept': 'application/json',
